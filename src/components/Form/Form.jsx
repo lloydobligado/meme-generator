@@ -1,5 +1,4 @@
-import { useState } from 'react'
-import memesData from '../../utils/memesData.js'
+import { useState, useEffect } from 'react'
 import './Form.scss'
 
 const Form = () => {
@@ -10,14 +9,18 @@ const Form = () => {
     randomImage: "https://i.imgflip.com/1ihzfe.jpg"
 })
 
-  const [allMemeImages, setAllMemeImages] = useState(memesData)
-  let url
+  const [allMemeImages, setAllMemeImages] = useState([])
+
+  useEffect(() => {
+    fetch("https://api.imgflip.com/get_memes")
+      .then(res => res.json())
+      .then(data => setAllMemeImages(data.data.memes))
+  }, [])
 
   const getMemeImage = () => {
-    const memesArray = allMemeImages.data.memes
-    const randomNumber = Math.floor(Math.random() * memesArray.length)
+    const randomNumber = Math.floor(Math.random() * allMemeImages.length)
     
-    url = memesArray[randomNumber].url
+    const url = allMemeImages[randomNumber].url
     setMeme(prevMeme => ({
       ...prevMeme,
       randomImage: url
